@@ -153,6 +153,12 @@ body{
   padding: 0 0 4px; width:100%;
 }
 .title-input::placeholder{ color: var(--label-tertiary); }
+.writer-input{
+  font-family: var(--font-text); font-size: 13.5px; font-weight: 500;
+  color: var(--label-secondary); background:none; border:none; outline:none;
+  padding: 0 0 10px; width:100%;
+}
+.writer-input::placeholder{ color: var(--label-tertiary); }
 .editor-meta{ font-size: 11.5px; color: var(--label-tertiary); margin-bottom: 16px; }
 
 .script-body{
