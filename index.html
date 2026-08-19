@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <div class="error-banner" id="errorBanner" hidden></div>
+
+  <div class="shell">
+
+    <!-- ============ SIDEBAR — list of scripts ============ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="app-title">Script Diary</span>
+        <button class="new-btn" id="newScriptBtn" title="New script">+</button>
+      </div>
+      <div class="script-list" id="scriptList"></div>
+      <p class="empty-state" id="listEmpty">No scripts yet. Tap + to start one.</p>
+    </aside>
+
+    <!-- ============ EDITOR ============ -->
+    <main class="editor" id="editor">
+      <div class="editor-empty" id="editorEmpty">
+        <p>Select a script, or start a new one.</p>
+      </div>
+
+      <div class="editor-inner" id="editorInner" hidden>
+        <div class="editor-toolbar">
+          <button class="back-btn" id="backBtn" title="Back to list">&larr;</button>
+          <div class="save-status" id="saveStatus">Saved</div>
+          <div class="toolbar-actions">
+            <button class="shot-btn" id="shotBtn">Shot already</button>
+            <button class="text-btn delete-btn" id="deleteScriptBtn">Delete</button>
+          </div>
+        </div>
+
+        <input type="text" class="title-input" id="titleInput" placeholder="Untitled">
+        <div class="editor-meta" id="editorMeta"></div>
+        <textarea class="script-body" id="bodyInput" placeholder="INT. LOCATION - DAY&#10;&#10;Start writing…" spellcheck="false"></textarea>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

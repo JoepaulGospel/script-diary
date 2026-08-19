@@ -1,0 +1,176 @@
+/* =========================================================
+   SCRIPT DIARY — visual system
+   Same Apple HIG language as Logger: quiet materials,
+   restrained color, one accent. The editor itself uses
+   Courier Prime — the standard screenplay typeface.
+   ========================================================= */
+
+:root{
+  --bg-base:        #000000;
+  --bg-elevated:     rgba(28, 28, 30, 0.72);
+  --bg-elevated-2:   rgba(44, 44, 46, 0.6);
+  --hairline:        rgba(255, 255, 255, 0.08);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+
+  --label-primary:    rgba(255, 255, 255, 0.92);
+  --label-secondary:  rgba(235, 235, 245, 0.60);
+  --label-tertiary:   rgba(235, 235, 245, 0.38);
+
+  --accent:      #0A84FF;
+  --good: #30D158;
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 9px;
+
+  --font-display: -apple-system, "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+  --font-text:    -apple-system, "SF Pro Text", "Inter", "Helvetica Neue", sans-serif;
+  --font-script:  "Courier Prime", "Courier New", monospace;
+}
+
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; height:100%; }
+
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -8%, rgba(10,132,255,0.08), transparent 60%),
+    var(--bg-base);
+  color: var(--label-primary);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  height:100vh;
+}
+
+.app{ height:100vh; display:flex; flex-direction:column; padding: 20px; }
+.error-banner{
+  background: rgba(255,69,58,0.14); border: 1px solid rgba(255,69,58,0.4);
+  color: #FF6961; border-radius: var(--radius-md); padding: 12px 16px;
+  font-size: 13px; margin-bottom: 14px;
+}
+.error-banner b{ color: #FF8A80; }
+
+.shell{
+  flex:1;
+  display:grid;
+  grid-template-columns: 300px 1fr;
+  background: var(--bg-elevated);
+  backdrop-filter: blur(40px) saturate(160%);
+  -webkit-backdrop-filter: blur(40px) saturate(160%);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 30px 70px -30px rgba(0,0,0,0.7);
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  border-right: 1px solid var(--hairline);
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+}
+.sidebar-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 20px 18px 14px; position:sticky; top:0;
+  background: var(--bg-elevated); z-index:2;
+}
+.app-title{ font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+.new-btn{
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent); color:#fff; border:none;
+  font-size: 18px; line-height:1; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.new-btn:hover{ filter: brightness(1.15); }
+
+.script-list{ padding: 4px 10px 16px; flex:1; }
+.script-item{
+  padding: 12px 12px; border-radius: var(--radius-sm);
+  cursor:pointer; margin-bottom: 2px;
+}
+.script-item:hover{ background: var(--bg-elevated-2); }
+.script-item.active{ background: var(--accent); }
+.script-item.active .script-item-title,
+.script-item.active .script-item-snippet,
+.script-item.active .script-item-date{ color:#fff; }
+
+.script-item-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.script-item-title{
+  font-size: 14.5px; font-weight: 600; color: var(--label-primary);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.shot-badge{
+  font-family: var(--font-display); font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.04em; text-transform:uppercase;
+  background: rgba(48,209,88,0.18); color: var(--good);
+  padding: 2px 7px; border-radius: 980px; flex-shrink:0;
+}
+.script-item.active .shot-badge{ background: rgba(255,255,255,0.25); color:#fff; }
+.script-item-snippet{
+  font-size: 12.5px; color: var(--label-tertiary); margin-top: 3px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.script-item-date{
+  font-size: 10.5px; color: var(--label-tertiary); margin-top: 4px;
+}
+
+.empty-state{ font-size: 13px; color: var(--label-tertiary); padding: 0 18px; }
+.empty-state.hidden{ display:none; }
+
+/* ---------- Editor ---------- */
+.editor{ display:flex; flex-direction:column; min-width:0; }
+.editor-empty{
+  flex:1; display:flex; align-items:center; justify-content:center;
+  color: var(--label-tertiary); font-size: 14px;
+}
+.editor-inner{ flex:1; display:flex; flex-direction:column; min-height:0; padding: 18px 26px 24px; }
+
+.editor-toolbar{
+  display:flex; align-items:center; justify-content:space-between; gap: 12px; margin-bottom: 14px;
+}
+.back-btn{
+  display:none; background:none; border:none; color: var(--accent);
+  font-size: 20px; cursor:pointer; padding: 0 6px 0 0;
+}
+.save-status{ font-size: 12px; color: var(--label-tertiary); }
+.toolbar-actions{ display:flex; align-items:center; gap: 16px; }
+.shot-btn{
+  font-family: var(--font-text); font-size: 12.5px; font-weight: 600;
+  padding: 7px 14px; border-radius: 980px; border: 1px solid var(--hairline-strong);
+  background: var(--bg-elevated-2); color: var(--label-secondary); cursor:pointer;
+}
+.shot-btn.active{ background: rgba(48,209,88,0.16); border-color: rgba(48,209,88,0.4); color: var(--good); }
+.text-btn{
+  font-family: var(--font-text); font-size: 13px; font-weight: 500;
+  color: var(--accent); background:none; border:none; cursor:pointer; padding:0;
+}
+.delete-btn{ color: var(--label-tertiary); }
+.delete-btn:hover{ color: #FF453A; }
+
+.title-input{
+  font-family: var(--font-display); font-size: 24px; font-weight: 700;
+  color: var(--label-primary); background:none; border:none; outline:none;
+  padding: 0 0 4px; width:100%;
+}
+.title-input::placeholder{ color: var(--label-tertiary); }
+.editor-meta{ font-size: 11.5px; color: var(--label-tertiary); margin-bottom: 16px; }
+
+.script-body{
+  flex:1; width:100%; resize:none; outline:none; border:none;
+  background: var(--bg-elevated-2); border-radius: var(--radius-md);
+  padding: 22px 26px; color: var(--label-primary);
+  font-family: var(--font-script); font-size: 14.5px; line-height: 1.7;
+}
+.script-body::placeholder{ color: var(--label-tertiary); }
+
+/* ---------- Responsive: list and editor swap like a phone Notes app ---------- */
+@media (max-width: 820px){
+  .app{ padding: 10px; }
+  .shell{ grid-template-columns: 1fr; border-radius: 18px; }
+  .sidebar{ border-right:none; }
+  .editor{ display:none; }
+  .editor.open{ display:flex; }
+  .sidebar.hidden-mobile{ display:none; }
+  .back-btn{ display:inline-block; }
+  .editor-inner{ padding: 14px 18px 18px; }
+}
