@@ -71,7 +71,7 @@ function renderList() {
         <div class="script-item-title">${escapeHtml(s.title || "Untitled")}</div>
         ${s.shot ? '<span class="shot-badge">Shot</span>' : ""}
       </div>
-      <div class="script-item-snippet">${escapeHtml(snippetOf(s.body))}</div>
+      <div class="script-item-snippet">${s.writer ? escapeHtml(s.writer) + " · " : ""}${escapeHtml(snippetOf(s.body))}</div>
       <div class="script-item-date">${formatDate(s.updated_at)}</div>
     `;
     item.addEventListener("click", () => selectScript(s.id));
@@ -99,6 +99,7 @@ document.getElementById("newScriptBtn").addEventListener("click", async () => {
 const editorEmpty = document.getElementById("editorEmpty");
 const editorInner = document.getElementById("editorInner");
 const titleInput = document.getElementById("titleInput");
+const writerInput = document.getElementById("writerInput");
 const bodyInput = document.getElementById("bodyInput");
 const editorMeta = document.getElementById("editorMeta");
 const saveStatus = document.getElementById("saveStatus");
@@ -114,6 +115,7 @@ function selectScript(id) {
   editorEmpty.hidden = true;
   editorInner.hidden = false;
   titleInput.value = s.title || "";
+  writerInput.value = s.writer || "";
   bodyInput.value = s.body || "";
   editorMeta.textContent = "Last edited " + formatDate(s.updated_at);
   shotBtn.textContent = s.shot ? "Shot ✓" : "Shot already";
@@ -143,10 +145,15 @@ async function doSave() {
   try {
     await api(`/api/scripts?id=${activeId}`, {
       method: "PUT",
-      body: JSON.stringify({ title: titleInput.value, body: bodyInput.value }),
+      body: JSON.stringify({ title: titleInput.value, writer: writerInput.value, body: bodyInput.value }),
     });
     const s = scripts.find((x) => x.id === activeId);
-    if (s) { s.title = titleInput.value; s.body = bodyInput.value; s.updated_at = new Date().toISOString(); }
+    if (s) {
+      s.title = titleInput.value;
+      s.writer = writerInput.value;
+      s.body = bodyInput.value;
+      s.updated_at = new Date().toISOString();
+    }
     saveStatus.textContent = "Saved";
     renderList();
     clearError();
@@ -157,6 +164,7 @@ async function doSave() {
 }
 
 titleInput.addEventListener("input", scheduleSave);
+writerInput.addEventListener("input", scheduleSave);
 bodyInput.addEventListener("input", scheduleSave);
 
 // ---------- Shot toggle ----------
