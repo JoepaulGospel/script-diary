@@ -19,11 +19,12 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
       const title = (req.body && req.body.title) || "Untitled";
+      const writer = (req.body && req.body.writer) || "";
       const body = (req.body && req.body.body) || "";
       const result = await db.execute({
-        sql: `INSERT INTO scripts (title, body, shot, created_at, updated_at)
-              VALUES (?, ?, 0, ?, ?)`,
-        args: [title, body, now, now],
+        sql: `INSERT INTO scripts (title, writer, body, shot, created_at, updated_at)
+              VALUES (?, ?, ?, 0, ?, ?)`,
+        args: [title, writer, body, now, now],
       });
       return res.status(201).json({ id: Number(result.lastInsertRowid) });
     }
@@ -35,6 +36,7 @@ export default async function handler(req, res) {
       const fields = [];
       const args = [];
       if (req.body.title !== undefined) { fields.push("title = ?"); args.push(req.body.title); }
+      if (req.body.writer !== undefined) { fields.push("writer = ?"); args.push(req.body.writer); }
       if (req.body.body !== undefined) { fields.push("body = ?"); args.push(req.body.body); }
       if (req.body.shot !== undefined) { fields.push("shot = ?"); args.push(req.body.shot ? 1 : 0); }
       fields.push("updated_at = ?"); args.push(now);
