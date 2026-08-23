@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Script Diary</title>
+<title>Tiziano Scripts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,7 +20,7 @@
     <!-- ============ SIDEBAR — list of scripts ============ -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <span class="app-title">Script Diary</span>
+        <span class="app-title">Tiziano Scripts</span>
         <button class="new-btn" id="newScriptBtn" title="New script">+</button>
       </div>
       <div class="script-list" id="scriptList"></div>
@@ -37,6 +38,7 @@
           <button class="back-btn" id="backBtn" title="Back to list">&larr;</button>
           <div class="save-status" id="saveStatus">Saved</div>
           <div class="toolbar-actions">
+            <button class="text-btn" id="downloadBtn">Download PDF</button>
             <button class="shot-btn" id="shotBtn">Shot already</button>
             <button class="text-btn delete-btn" id="deleteScriptBtn">Delete</button>
           </div>
@@ -45,6 +47,17 @@
         <input type="text" class="title-input" id="titleInput" placeholder="Untitled">
         <input type="text" class="writer-input" id="writerInput" placeholder="Written by…">
         <div class="editor-meta" id="editorMeta"></div>
+
+        <!-- Screenplay formatting — applies proper industry indentation to the current line -->
+        <div class="format-bar">
+          <button type="button" class="fmt-btn" data-fmt="scene">Scene</button>
+          <button type="button" class="fmt-btn" data-fmt="action">Action</button>
+          <button type="button" class="fmt-btn" data-fmt="character">Character</button>
+          <button type="button" class="fmt-btn" data-fmt="parenthetical">Parenthetical</button>
+          <button type="button" class="fmt-btn" data-fmt="dialogue">Dialogue</button>
+          <button type="button" class="fmt-btn" data-fmt="transition">Transition</button>
+        </div>
+
         <textarea class="script-body" id="bodyInput" placeholder="INT. LOCATION - DAY&#10;&#10;Start writing…" spellcheck="false"></textarea>
       </div>
     </main>
