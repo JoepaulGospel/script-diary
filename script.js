@@ -167,6 +167,127 @@ titleInput.addEventListener("input", scheduleSave);
 writerInput.addEventListener("input", scheduleSave);
 bodyInput.addEventListener("input", scheduleSave);
 
+// ---------- Screenplay formatting bar ----------
+// Column positions match standard US screenplay margins,
+// converted to characters at Courier 12pt (10 characters/inch),
+// measured from the action/scene margin (1.5" from the page edge):
+//   Character name   — 2.2" in  = 22 chars
+//   Parenthetical     — 1.6" in  = 16 chars
+//   Dialogue          — 1.0" in  = 10 chars
+//   Transition        — right-aligned to the 6"-wide text column (60 chars)
+const FORMAT_COLUMNS = { character: 22, parenthetical: 16, dialogue: 10 };
+const TRANSITION_COLUMN = 60;
+
+function applyFormat(mode) {
+  const ta = bodyInput;
+  const value = ta.value;
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  const lineStart = value.lastIndexOf("\n", start - 1) + 1;
+  let lineEnd = value.indexOf("\n", end);
+  if (lineEnd === -1) lineEnd = value.length;
+  const text = value.slice(lineStart, lineEnd).trim();
+
+  let out = text;
+  let indent = 0;
+
+  switch (mode) {
+    case "scene":
+      out = text.toUpperCase();
+      indent = 0;
+      break;
+    case "action":
+      indent = 0;
+      break;
+    case "character":
+      out = text.toUpperCase();
+      indent = FORMAT_COLUMNS.character;
+      break;
+    case "parenthetical":
+      out = text.startsWith("(") ? text : `(${text || ""})`;
+      indent = FORMAT_COLUMNS.parenthetical;
+      break;
+    case "dialogue":
+      indent = FORMAT_COLUMNS.dialogue;
+      break;
+    case "transition":
+      out = text.toUpperCase();
+      indent = Math.max(TRANSITION_COLUMN - out.length, 0);
+      break;
+  }
+
+  const newLine = " ".repeat(indent) + out;
+  ta.value = value.slice(0, lineStart) + newLine + value.slice(lineEnd);
+  const cursorPos = lineStart + newLine.length;
+  ta.focus();
+  ta.setSelectionRange(cursorPos, cursorPos);
+  scheduleSave();
+}
+
+document.querySelectorAll(".fmt-btn").forEach((btn) => {
+  btn.addEventListener("click", () => applyFormat(btn.dataset.fmt));
+});
+
+// ---------- PDF export ----------
+// Matches the same column math as the formatting bar above, so
+// whatever you've indented in the editor lands in the same place
+// on the page. Includes a title page and a background watermark
+// on every page.
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "pt", format: "letter" });
+  const pageWidth = 612, pageHeight = 792;
+  const marginLeft = 108;   // 1.5"
+  const marginRight = 72;   // 1"
+  const marginTop = 72;     // 1"
+  const marginBottom = 72;  // 1"
+  const lineHeight = 12;    // 6 lines/inch at 72pt/inch
+  const charWidth = 7.2;    // 10 chars/inch at 72pt/inch
+
+  function watermark() {
+    doc.setFont("courier", "bold");
+    doc.setFontSize(48);
+    doc.setTextColor(232, 232, 232);
+    doc.text("TIZIANO FILMS", pageWidth / 2, pageHeight / 2, { angle: 45, align: "center" });
+    doc.setTextColor(0, 0, 0);
+    doc.setFont("courier", "normal");
+    doc.setFontSize(12);
+  }
+
+  // Title page
+  watermark();
+  doc.setFont("courier", "bold");
+  doc.text((titleInput.value || "Untitled").toUpperCase(), pageWidth / 2, pageHeight / 2 - 40, { align: "center" });
+  doc.setFont("courier", "normal");
+  doc.text("by", pageWidth / 2, pageHeight / 2 - 10, { align: "center" });
+  doc.text(writerInput.value || "", pageWidth / 2, pageHeight / 2 + 14, { align: "center" });
+
+  // Content pages
+  doc.addPage();
+  let pageNum = 2;
+  watermark();
+  doc.text(pageNum + ".", pageWidth - marginRight, marginTop - 20, { align: "right" });
+
+  let y = marginTop;
+  const maxY = pageHeight - marginBottom;
+
+  bodyInput.value.split("\n").forEach((line) => {
+    if (y > maxY) {
+      doc.addPage();
+      pageNum++;
+      watermark();
+      doc.text(pageNum + ".", pageWidth - marginRight, marginTop - 20, { align: "right" });
+      y = marginTop;
+    }
+    const leadingSpaces = (line.match(/^ */) || [""])[0].length;
+    const x = marginLeft + leadingSpaces * charWidth;
+    doc.text(line.slice(leadingSpaces), x, y);
+    y += lineHeight;
+  });
+
+  doc.save((titleInput.value || "script") + ".pdf");
+});
+
 // ---------- Shot toggle ----------
 shotBtn.addEventListener("click", async () => {
   if (activeId === null) return;
