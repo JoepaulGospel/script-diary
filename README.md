@@ -1,4 +1,4 @@
-# Script Diary — setup
+# Tiziano Scripts — setup
 
 Same pattern as Logger: a small backend that saves everything to
 a Turso database, so your scripts sync across every device.
@@ -39,3 +39,17 @@ It means the app couldn't reach Turso — the message underneath
 tells you the real reason, almost always a wrong or missing
 `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN`. Fix it in Vercel's
 Environment Variables, then Deployments → ⋯ → Redeploy.
+
+## Screenplay formatting
+
+Above the writing area, six buttons — Scene, Action, Character,
+Parenthetical, Dialogue, Transition — indent whatever line your
+cursor is on to match standard industry margins (the same ones
+Final Draft uses). Click into a line, tap the matching button.
+
+## Downloading a script
+
+Open any script and click "Download PDF." It builds a proper
+title page (title + "by" + writer name) followed by the script
+itself in Courier, with page numbers and a faint "Tiziano Films"
+watermark across every page. Works the same on any device.
