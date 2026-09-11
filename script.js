@@ -270,19 +270,33 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
 
   let y = marginTop;
   const maxY = pageHeight - marginBottom;
+  const totalColumns = 60; // 6" of usable width at 10 chars/inch
 
-  bodyInput.value.split("\n").forEach((line) => {
-    if (y > maxY) {
-      doc.addPage();
-      pageNum++;
-      watermark();
-      doc.text(pageNum + ".", pageWidth - marginRight, marginTop - 20, { align: "right" });
-      y = marginTop;
-    }
-    const leadingSpaces = (line.match(/^ */) || [""])[0].length;
+  bodyInput.value.split("\n").forEach((rawLine) => {
+    if (rawLine.trim() === "") { y += lineHeight; return; }
+
+    const leadingSpaces = (rawLine.match(/^ */) || [""])[0].length;
+    const content = rawLine.slice(leadingSpaces);
     const x = marginLeft + leadingSpaces * charWidth;
-    doc.text(line.slice(leadingSpaces), x, y);
-    y += lineHeight;
+
+    // Wrap to whatever room is left between this indent and the
+    // right margin — this is the fix for long action/dialogue
+    // lines that only *looked* wrapped in the browser textarea.
+    const availableChars = Math.max(totalColumns - leadingSpaces, 10);
+    const availableWidthPt = availableChars * charWidth;
+    const wrapped = doc.splitTextToSize(content, availableWidthPt);
+
+    wrapped.forEach((wrappedLine) => {
+      if (y > maxY) {
+        doc.addPage();
+        pageNum++;
+        watermark();
+        doc.text(pageNum + ".", pageWidth - marginRight, marginTop - 20, { align: "right" });
+        y = marginTop;
+      }
+      doc.text(wrappedLine, x, y);
+      y += lineHeight;
+    });
   });
 
   doc.save((titleInput.value || "script") + ".pdf");
