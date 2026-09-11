@@ -51,8 +51,7 @@ body{
 
 .shell{
   flex:1;
-  display:grid;
-  grid-template-columns: 300px 1fr;
+  display:flex;
   background: var(--bg-elevated);
   backdrop-filter: blur(40px) saturate(160%);
   -webkit-backdrop-filter: blur(40px) saturate(160%);
@@ -64,11 +63,13 @@ body{
 
 /* ---------- Sidebar ---------- */
 .sidebar{
+  flex: 1;
   border-right: 1px solid var(--hairline);
   display:flex;
   flex-direction:column;
   min-height: 0;
 }
+.sidebar.hidden-mobile{ display:none; }
 .sidebar-header{
   display:flex; align-items:center; justify-content:space-between;
   padding: 20px 18px 14px; flex-shrink: 0;
@@ -84,7 +85,7 @@ body{
 .new-btn:hover{ filter: brightness(1.15); }
 
 .script-list-scroll{ flex:1; min-height:0; overflow-y:auto; }
-.script-list{ padding: 8px 10px 16px; }
+.script-list{ padding: 8px 16px 16px; max-width: 640px; margin: 0 auto; }
 .script-item{
   padding: 12px 12px; border-radius: var(--radius-sm);
   cursor:pointer; margin-bottom: 2px;
@@ -119,19 +120,25 @@ body{
 .empty-state.hidden{ display:none; }
 
 /* ---------- Editor ---------- */
-.editor{ display:flex; flex-direction:column; min-width:0; }
+.editor{ display:none; flex-direction:column; min-width:0; flex:1; }
+.editor.open{ display:flex; }
 .editor-empty{
   flex:1; display:flex; align-items:center; justify-content:center;
   color: var(--label-tertiary); font-size: 14px;
 }
-.editor-inner{ flex:1; display:flex; flex-direction:column; min-height:0; padding: 18px 26px 24px; }
+.editor-inner{
+  flex:1; display:flex; flex-direction:column; min-height:0;
+  padding: 22px 40px 32px; max-width: 900px; width:100%; margin: 0 auto;
+}
 
 .editor-toolbar{
   display:flex; align-items:center; justify-content:space-between; gap: 12px; margin-bottom: 14px;
 }
 .back-btn{
-  display:none; background:none; border:none; color: var(--accent);
-  font-size: 20px; cursor:pointer; padding: 0 6px 0 0;
+  display:inline-flex; align-items:center; gap: 6px;
+  background:none; border:none; color: var(--accent);
+  font-family: var(--font-text); font-size: 14px; font-weight: 500;
+  cursor:pointer; padding: 0;
 }
 .save-status{ font-size: 12px; color: var(--label-tertiary); }
 .toolbar-actions{ display:flex; align-items:center; gap: 16px; }
@@ -174,19 +181,15 @@ body{
 .script-body{
   flex:1; width:100%; resize:none; outline:none; border:none;
   background: var(--bg-elevated-2); border-radius: var(--radius-md);
-  padding: 22px 26px; color: var(--label-primary);
-  font-family: var(--font-script); font-size: 14.5px; line-height: 1.7;
+  padding: 32px 40px; color: var(--label-primary);
+  font-family: var(--font-script); font-size: 15px; line-height: 1.8;
 }
 .script-body::placeholder{ color: var(--label-tertiary); }
 
-/* ---------- Responsive: list and editor swap like a phone Notes app ---------- */
+/* ---------- Small screens: just tighten padding, same list/editor toggle applies everywhere ---------- */
 @media (max-width: 820px){
   .app{ padding: 10px; }
-  .shell{ grid-template-columns: 1fr; border-radius: 18px; }
+  .shell{ border-radius: 18px; }
   .sidebar{ border-right:none; }
-  .editor{ display:none; }
-  .editor.open{ display:flex; }
-  .sidebar.hidden-mobile{ display:none; }
-  .back-btn{ display:inline-block; }
-  .editor-inner{ padding: 14px 18px 18px; }
+  .editor-inner{ padding: 14px 18px 18px; max-width: none; }
 }
