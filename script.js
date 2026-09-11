@@ -112,8 +112,8 @@ function selectScript(id) {
   const s = scripts.find((x) => x.id === id);
   if (!s) return;
 
-  editorEmpty.hidden = true;
-  editorInner.hidden = false;
+  editorEmpty.classList.add("is-hidden");
+  editorInner.classList.remove("is-hidden");
   titleInput.value = s.title || "";
   writerInput.value = s.writer || "";
   bodyInput.value = s.body || "";
@@ -330,8 +330,8 @@ document.getElementById("deleteScriptBtn").addEventListener("click", async () =>
     await api(`/api/scripts?id=${activeId}`, { method: "DELETE" });
     scripts = scripts.filter((x) => x.id !== activeId);
     activeId = null;
-    editorInner.hidden = true;
-    editorEmpty.hidden = false;
+    editorInner.classList.add("is-hidden");
+    editorEmpty.classList.remove("is-hidden");
     editorPane.classList.remove("open");
     sidebarPane.classList.remove("hidden-mobile");
     renderList();
