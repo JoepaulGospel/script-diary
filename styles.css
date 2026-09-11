@@ -126,6 +126,7 @@ body{
   flex:1; display:flex; align-items:center; justify-content:center;
   color: var(--label-tertiary); font-size: 14px;
 }
+.editor-empty.is-hidden, .editor-inner.is-hidden{ display:none !important; }
 .editor-inner{
   flex:1; display:flex; flex-direction:column; min-height:0;
   padding: 22px 40px 32px; max-width: 900px; width:100%; margin: 0 auto;
